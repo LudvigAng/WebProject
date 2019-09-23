@@ -1,0 +1,31 @@
+<h1>Write review</h1>
+
+
+
+{{#if validationErrors.length}}
+    <p>Error:</p>
+    <ul>
+        {{#each validationErrors}}
+            <li>{{this}}</li>
+        {{/each}}
+    </ul>
+{{/if}}
+
+
+<form action="" method="POST">
+    
+    <div>
+        Name of book: <input type="text" name="name">
+    </div>
+    
+    <div>
+        Rating: <input type="number" name="rating" min="1" max="5">
+    </div>
+    
+    <div>
+        Your thoughts: <input type="text" name="body">
+    </div>
+
+    <input type="submit" value="Finish review">
+
+</form>
