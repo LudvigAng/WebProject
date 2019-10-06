@@ -1,0 +1,30 @@
+
+{{#if validationErrors.length}}
+    <p>Error:</p>
+    <ul>
+        {{#each validationErrors}}
+            <li>{{this}}</li>
+        {{/each}}
+    </ul>
+{{/if}}
+
+<div class="container" style="width: 500px; margin: 150px auto;">
+
+    <h1 id="textHeader" style="text-align: center;">Login</h1>
+    <div id="topstylebar"></div>
+
+    <form action="/login" method="POST" autocomplete="off">
+        <div class="form-group">
+            <label for="username">Username</label>
+            <input type="text" name="username" class="form-control" aria-label="username" aria-describedby="button-addon2">
+        </div>
+        
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" name="password" class="form-control" aria-label="password" aria-describedby="button-addon2">
+        </div>
+
+        <input class="btn btn-outline-dark" type="submit" value="login">
+    </form>
+
+</div>

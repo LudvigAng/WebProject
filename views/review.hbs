@@ -1,1 +1,55 @@
-<h1>This specific human</h1>
+{{#if review}}
+    <div class="container" id="reviewcontainer">
+        <h1 class="mb-0" style="margin: 30px 0px 10px 15px;">{{review.name}}</h1>
+        <h4 class="mb-1 text-muted" style="margin: 5px 0px 50px 15px;">by {{review.author}}</h4>
+        <h5 class="mb-1 text-muted" style="margin: 5px 0px 50px 15px;">Review published: {{review.publishtime}}</h5>
+        
+        <h4 style="margin: 15px 0px 20px 15px; display: inline-block">Rating: {{review.rating}}</h3>
+
+        {{#if isLoggedIn}}
+        <a id="reviewbutton" href="/reviews/{{review.reviewid}}/delete"><button type="button" class="btn btn-dark">Delete review</button></a>
+        <a id="reviewbutton" href="/reviews/{{review.reviewid}}/edit"><button type="button" class="btn btn-dark">Edit review</button></a>
+        {{else}}
+        {{/if}}
+
+        <div id="topstylebar" style="margin-bottom: 30px; background-color: #6c757d;"></div>
+
+        <p style="margin: 0px 0px 20px 0px; word-wrap:break-word">{{review.body}}</p>
+
+    </div>
+
+    <div class="container">
+        <h4>Write a comment</h4>
+        <form action="" method="POST" autocomplete="off">
+            <div class="form-group">
+                <label for="name">Your name</label>
+                <input type="text" name="name" class="form-control" aria-label="name" aria-describedby="button-addon2">
+            </div>
+
+            <div class="form-group">
+                <label for="body">Your message</label>
+                <textarea type="text" name="body" aria-label="body" class="form-control rounded-0" id="exampleFormControlTextarea1" rows="3"></textarea>
+            </div>
+
+            <input class="btn btn-outline-dark" type="submit" value="Post comment">
+        </form>
+    </div>
+    
+    <div class="container">
+    {{#if comments.length}}
+        {{#each comments}}
+            <div style="margin-top: 20px; padding: 15px; border: 1px solid #6c757d; border-radius: 15px; background-color: #e6e6e6;">
+            <h4 class="mb-0">{{name}}</h4>
+            <h6 class="mb-1 text-muted">at {{publishtime}}</h6>
+            <p style="word-wrap:break-word;">{{body}}</p>
+            <a class="nav-link" href="/reviews/{{commentid}}/delete-comment">Delete comment</a>
+            </div>
+        {{/each}}
+    {{/if}}
+    </div>
+
+{{else}}
+    
+    <p style="margin-top: 20px;">No review with this id found.</p>
+
+{{/if}}

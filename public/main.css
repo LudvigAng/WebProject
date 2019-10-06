@@ -1,8 +1,84 @@
+
+@import url(//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css);
+
 body {
-    background-color: #e6f5ff;
+    background-color: #f5f5f5;
+    font-family: "Playfair Display", Georgia, "Times New Roman", serif;
 }
 
-header {
-    background-color: #66c2ff;
-    border: 1px solid black;
+.comments {
+    width: 600px;
+    height: 100px;
+    margin: 0 auto;
+    font-size: 50px;
+}
+
+.reviewstylebar {
+    float: top;
+    height: 15px;
+    width: 100%;
+    background-color: #212529;
+}
+
+#topstylebar {
+    height: 2px;
+    width: 100%;
+    background-color: #212529;
+    border-radius: 5px;
+    margin-bottom: 60px;
+}
+
+#reviewcontainer {
+    min-height: 500px; 
+    margin-bottom: 60px;
+    border-bottom: #6c757d 2px solid;
+    border-radius: 5px;
+}
+
+#textHeader {
+    text-align: left;
+    margin: 50px 20px 20px 0;
+}
+
+#body-preview {
+    display: block;
+    width: 30em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.reviewrating {
+    float: left;
+    display: flexbox;
+}
+
+.reviewrating > input {
+    display: none;
+}
+
+.reviewrating > label:before {
+    margin: 3px;
+    font-size: 1.8em;
+    font-family: FontAwesome;
+    display: inline-block;
+    content: "\f005";
+}
+
+.reviewrating > label {
+    color: #ddd;
+    float: right;
+}
+
+.reviewrating > input:checked ~ label, .reviewrating:not(:checked) > label:hover, .reviewrating:not(:checked) > label:hover ~ label {
+    color: #FFD700;
+}
+
+.reviewrating > input:checked + label:hover, .reviewrating > input:checked ~ label:hover, .rating > label:hover ~ input:checked ~ label, .rating > input:checked ~ label:hover ~ label {
+    color: #FFED85;
+}
+
+#reviewbutton {
+    float: right;
+    margin: 5px;
 }

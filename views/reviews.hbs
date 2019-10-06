@@ -1,1 +1,29 @@
-<h1>All reviews are displayed here!</h1>
+<h1 id="textHeader">Reviews</h1>
+<div id="topstylebar"></div>
+
+{{#if errorHappened}}
+
+    <p>Internal server error</p>
+
+{{else}}
+
+    <div class="row mb-2"> 
+
+    {{#if reviews.length}}
+        {{#each reviews}}
+            <div class="col-md-6">
+                <div class="row no-gutters border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+                    <div class="reviewstylebar"></div>
+                    <div class="col p-4 d-flex flex-column position-static">
+                        <h3 class="mb-0">{{name}}</h3>
+                        <div class="mb-1 text-muted">by {{author}}</div>
+                        <p class="card-text mb-auto" id="body-preview">{{body}}</p>
+                        <a href="/reviews/{{reviewid}}" class="stretched-link">Continue reading</a>
+                    </div>
+                </div>
+            </div>
+        {{/each}}
+    {{/if}}
+
+    </div>
+{{/if}}
