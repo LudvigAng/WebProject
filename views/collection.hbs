@@ -1,0 +1,38 @@
+{{#if collection}}
+    <h1>{{collection.name}}</h1>
+    <h3>{{collection.noOfReviews}} reviews</h3>
+
+    {{#if isLoggedIn}}
+        <form action="/collections/{{collection.collectionid}}/delete" method="POST">
+            <input type="hidden" name="collectionid" value="{{{collection.collectionid}}}">
+            <input type="hidden" name="_csrf" value="{{{csrfToken}}}">
+            <button type="submit">Delete collection</button>
+        </form>
+
+        <a id="reviewbutton" href="/collections/{{collection.collectionid}}/edit"><button type="button" class="btn btn-dark">Edit collection</button></a>
+    {{else}}
+    {{/if}}
+
+    <p>{{collection.description}}</p>
+
+
+    <div class="container">
+    {{#if reviews.length}}
+        {{#each reviews}}
+            <div>
+            <h4 class="mb-0">{{name}}</h4>
+            <h6 class="mb-1 text-muted">at {{publishtime}}</h6> 
+            <p style="word-wrap:break-word;">{{body}}</p>
+            <a class="nav-link" href="/reviews/{{reviewid}}">Go to review</a>
+            </div>
+        {{/each}}
+    {{else}}
+        <p>There are no reviews within this collection</p>
+    {{/if}}
+    </div>
+
+{{else}}
+    
+    <p style="margin-top: 20px;">No collection with this id found.</p>
+
+{{/if}}

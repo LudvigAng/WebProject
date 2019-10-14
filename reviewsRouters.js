@@ -28,21 +28,28 @@ router.get("/", function(request, response){
 })
 
 router.get("/write", function(request, response){
-    const model = {
-        validationErrors: []
-    }
 
-    response.render("write-review.hbs", model)
+    db.getCollections(function(error, collections) {
+
+        if(error) {
+
+        }
+        else {
+
+            const model = {
+                collections
+            }
+
+            response.render("write-review.hbs", model)
+        }
+    })
 })
 
 router.get("/:id", function(request, response) {
 
     const id = request.params.id
 
-    response.cookie("lastViewedReviewid", id)
-
-    console.log(request.session.lastViewedReviewid)
-    console.log(response.locals.lastViewedReviewid)
+    response.cookie("lastViewedReviewid", id, {httpOnly: true})
 
     db.getReviewById(id, function(error, review) {
 
@@ -55,12 +62,22 @@ router.get("/:id", function(request, response) {
 
                 }
                 else {
-                    const model = {
-                        review,
-                        comments
-                    }
+                    db.getCollectionById(review.collectionid, function(error, collection) {
+                        if (error) {
 
-                    response.render("review.hbs", model)
+                        }
+                        else {
+
+                            const model = {
+                                review,
+                                comments,
+                                collection
+                            }
+                                    
+                            response.render("review.hbs", model)
+                        }
+                    })
+
                 }
             })
         }
@@ -75,11 +92,19 @@ router.get("/:id/edit", function(request, response) {
 
         }
         else {
-            const model = {
-                review
-            }
+            db.getCollections(function(error, collections) {
+                if(error) {
 
-            response.render("edit-review.hbs", model)
+                }
+                else {
+                    const model = {
+                        review,
+                        collections
+                    }
+        
+                    response.render("edit-review.hbs", model)
+                }
+            })
         }
     })
 })
@@ -89,11 +114,12 @@ router.post("/:id/edit", function(request, response) {
     const author = request.body.author
     const rating = request.body.rating
     const body = request.body.body
+    const collectionid = request.body.collectionid
     const id = request.params.id
 
     const validationErrors = []
 
-    db.editReview(name, author, rating, body, id, function(error) {
+    db.editReview(name, author, rating, body, collectionid, id, function(error) {
         if(error) {
 
         }
@@ -104,15 +130,17 @@ router.post("/:id/edit", function(request, response) {
     })
 })
 
-router.get("/:id/delete-comment", function(request, response) {
+router.post("/:id/delete-comment", function(request, response) {
+    const commentid = request.body.commentid
     const id = request.params.id
 
-    db.deleteComment(id, function(id, error) {
+    console.log(commentid)
+    db.deleteComment(commentid, function(error) {
         if(error) {
 
         }
         else {
-            response.redirect("/reviews/"+response.locals.lastViewedReviewid)
+            response.redirect("/reviews/"+id)
         }
     })
 })
@@ -142,9 +170,10 @@ router.post("/write", function(request, response){
     const author = request.body.author
     const rating = request.body.rating
     const body = request.body.body
+    const collectionid = request.body.collectionid
     const currentdate = new Date()
     var currentminute = currentdate.getMinutes()
-    
+
     if (currentminute < 10) {
         currentminute = "0" + currentdate.getMinutes()
     }
@@ -184,22 +213,39 @@ router.post("/write", function(request, response){
 
     if(validationErrors.length == 0) {
 
-        db.writeReview(name, author, rating, publishtime, body, function(error, id) {
+        db.writeReview(name, author, rating, publishtime, body, collectionid, function(error, id) {
             if(error) {
 
             }
             else {
-                response.redirect("/reviews/"+id)
+
+                db.increaseCollectionSize(collectionid, function(error) {
+                    if(error) {
+
+                    }
+                    else {
+
+                        response.redirect("/reviews/"+id)
+                    }
+                })
             }
         }) 
     }
     else {
+        
+        db.getCollections(function(error, collections) {
+            if(error) {
 
-        const model = {
-            validationErrors
-        }
-
-        response.render("write-review.hbs", model)
+            }
+            else {
+                const model = {
+                    validationErrors,
+                    collections
+                }
+        
+                response.render("write-review.hbs", model)
+            }
+        })
     }
 })
 

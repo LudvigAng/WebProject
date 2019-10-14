@@ -4,7 +4,11 @@
         <h4 class="mb-1 text-muted" style="margin: 5px 0px 50px 15px;">by {{review.author}}</h4>
         <h5 class="mb-1 text-muted" style="margin: 5px 0px 50px 15px;">Review published: {{review.publishtime}}</h5>
         
+
         <h4 style="margin: 15px 0px 20px 15px; display: inline-block">Rating: {{review.rating}}</h3>
+        {{#if collection}}
+            <h4 style="margin: 15px 0px 20px 15px; display: inline-block; border: 3px solid {{{collection.color}}}; padding:5px; margin-left: 50px; color: {{{collection.color}}}; border-radius: 10px;">Collection: {{collection.name}}</h4>
+        {{/if}}
 
         {{#if isLoggedIn}}
         <a id="reviewbutton" href="/reviews/{{review.reviewid}}/delete"><button type="button" class="btn btn-dark">Delete review</button></a>
@@ -31,6 +35,8 @@
                 <textarea type="text" name="body" aria-label="body" class="form-control rounded-0" id="exampleFormControlTextarea1" rows="3"></textarea>
             </div>
 
+            <input type="hidden" name="_csrf" value="{{{csrfToken}}}">
+
             <input class="btn btn-outline-dark" type="submit" value="Post comment">
         </form>
     </div>
@@ -39,10 +45,16 @@
     {{#if comments.length}}
         {{#each comments}}
             <div style="margin-top: 20px; padding: 15px; border: 1px solid #6c757d; border-radius: 15px; background-color: #e6e6e6;">
-            <h4 class="mb-0">{{name}}</h4>
-            <h6 class="mb-1 text-muted">at {{publishtime}}</h6>
-            <p style="word-wrap:break-word;">{{body}}</p>
-            <a class="nav-link" href="/reviews/{{commentid}}/delete-comment">Delete comment</a>
+                <h4 class="mb-0">{{name}}</h4>
+                <h6 class="mb-1 text-muted">at {{publishtime}}</h6>
+                <p style="word-wrap:break-word;">{{body}}</p>
+
+                <form action="/reviews/{{review.reviewid}}/delete-comment" method="POST">
+                    <input type="hidden" name="commentid" value="{{{commentid}}}">
+                    <input type="hidden" name="_csrf" value="{{{csrfToken}}}">
+                    <button type="submit" class="btn btn-dark">Delete comment</button>
+                </form>
+
             </div>
         {{/each}}
     {{/if}}

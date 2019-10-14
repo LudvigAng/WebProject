@@ -1,0 +1,18 @@
+{{#if errorHappened}}
+
+<p>Internal server error</p>
+{{else}}
+    <ul>
+    {{#if collections.length}}
+        {{#each collections}}
+            <li><a href="/collections/{{collectionid}}">{{name}}</a></li>
+            <h3>{{noOfReviews}} reviews in this collection</h3>
+            <p>{{description}}</p>
+        {{/each}}
+    {{/if}}
+    </ul>
+
+    <a href="/collections/create">Create new collection</a>
+
+
+{{/if}}

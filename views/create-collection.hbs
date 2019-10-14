@@ -1,0 +1,39 @@
+<h1 id="textHeader">Create a collection</h1>
+<div id="topstylebar"></div>
+
+{{#if validationErrors.length}}
+    <p>Error:</p>
+    <ul>
+        {{#each validationErrors}}
+            <li>{{this}}</li>
+        {{/each}}
+    </ul>
+{{/if}}
+
+
+<form action="" method="POST" autocomplete="off">
+    
+    <div class="form-group">
+        <label for="name">Name of collection</label>
+        <input type="text" name="name" class="form-control" aria-label="name" aria-describedby="button-addon2">
+    </div>
+
+    <div class="form-group">
+        <label for="color">Color Scheme</label>
+        <input type="color" name="color" class="form-control" value="#66ccff" aria-label="color">
+    </div>
+
+    <div class="form-group" style="margin-top: 70px;">
+        <label for="body">Description</label>
+        <textarea type="text" name="description" aria-label="description" class="form-control rounded-0" id="exampleFormControlTextarea1" rows="5"></textarea>
+    </div>
+
+    <div class="form-check">
+        <label class="form-check-label"></label>
+
+    </div>
+
+    <input type="hidden" name="_csrf" value="{{{csrfToken}}}">
+
+    <input class="btn btn-outline-dark" type="submit" value="Create collection">
+</form>

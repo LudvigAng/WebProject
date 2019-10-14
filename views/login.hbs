@@ -1,3 +1,8 @@
+{{#if logoutHappened}}
+<ul>
+    <li>You have been logged out</li>
+</ul>
+{{/if}}
 
 {{#if validationErrors.length}}
     <p>Error:</p>
@@ -23,6 +28,8 @@
             <label for="password">Password</label>
             <input type="password" name="password" class="form-control" aria-label="password" aria-describedby="button-addon2">
         </div>
+
+        <input type="hidden" name="_csrf" value="{{{csrfToken}}}">
 
         <input class="btn btn-outline-dark" type="submit" value="login">
     </form>
