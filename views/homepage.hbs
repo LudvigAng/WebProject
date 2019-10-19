@@ -1,6 +1,6 @@
-<div class="jumbotron p-4 p-md-5 text-white rounded bg-dark topMargin70">
+<div class="jumbotron p-4 p-md-5 text-white rounded bg-dark topMargin70" id="headCollectionContainer">
 
-    <div class="col-md-6 px-0">
+    <div class="col-md-6 px-0 centerElement">
       {{#if review}}
         <h1 class="display-6 font-italic">Latest review:</h1>    
         <h1 class="display-4 font-italic">{{review.name}}</h1>
@@ -12,6 +12,7 @@
         <p class="lead my-3" id="body-preview">Wait for me to write something first...</p>
       {{/if}}
     </div>
+
 </div>
 
 <hr class="featurette-divider">

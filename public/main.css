@@ -107,6 +107,10 @@ body {
     text-align: center;
 }
 
+.centerElement {
+    margin: 0 auto;
+}
+
 .blockElement {
     display: block;
 }
