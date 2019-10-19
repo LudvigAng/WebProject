@@ -1,17 +1,26 @@
 <h1>Edit review here</h1>
 
+{{#if validationErrors.length}}
+    <p>Error:</p>
+    <ul>
+        {{#each validationErrors}}
+            <li>{{this}}</li>
+        {{/each}}
+    </ul>
+{{/if}}
+
 {{#if review}}
 
 <form action="" method="POST" autocomplete="off">
 
     <div class="form-group">
         <label for="name">Name of book</label>
-        <input type="text" name="name" value="{{{review.name}}}" class="form-control" aria-label="name" aria-describedby="button-addon2">
+        <input type="text" name="name" value="{{{review.name}}}" maxlength="{{{maxNameLength}}}" class="form-control" aria-label="name" aria-describedby="button-addon2">
     </div>
 
     <div class="form-group">
         <label for="author">Author</label>
-        <input type="text" name="author" value="{{{review.author}}}" class="form-control" aria-label="author" aria-describedby="button-addon2">
+        <input type="text" name="author" value="{{{review.author}}}" maxlength="{{{maxNameLength}}}" class="form-control" aria-label="author" aria-describedby="button-addon2">
     </div>
     
     <div class="form-group">
@@ -30,7 +39,7 @@
     </div>
 
     <div class="form-group">
-       <label style="display: block" for="rating">Rating</label>
+       <label class="blockElement" for="rating">Rating</label>
         <fieldset class="reviewrating">
             <input type="radio" id="star5" name="rating" value="5" /><label class = "full" for="star5"></label>
             <input type="radio" id="star4" name="rating" value="4" /><label class = "full" for="star4"></label>
@@ -40,9 +49,9 @@
         </fieldset>
     </div>
 
-    <div class="form-group" style="margin-top: 70px;">
+    <div class="form-group topMargin70">
         <label for="name">Your thoughts</label>
-        <textarea type="text" name="body" aria-label="body" class="form-control rounded-0" id="exampleFormControlTextarea1" rows="10">{{{review.body}}}</textarea>
+        <textarea type="text" name="body" aria-label="body" maxlength="{{{maxBodyLength}}}" class="form-control rounded-0" id="exampleFormControlTextarea1" rows="10">{{{review.body}}}</textarea>
     </div>
 
     <input type="hidden" name="_csrf" value="{{{csrfToken}}}">
@@ -50,6 +59,6 @@
     <input class="btn btn-outline-dark" type="submit" value="Finish editing review">
 </form>
 
-<a href="/reviews/{{review.reviewid}}"><button class="btn btn-outline-dark" style="margin-top: 8px;" type="button">Cancel</button></a>
+<a href="/reviews/{{review.reviewid}}"><button class="btn btn-outline-dark topMargin8 bottomMargin30" type="button">Cancel</button></a>
 
 {{/if}}

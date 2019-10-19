@@ -1,11 +1,61 @@
-<div class="jumbotron p-4 p-md-5 text-white rounded bg-dark" style="margin-top: 40px">
+<div class="jumbotron p-4 p-md-5 text-white rounded bg-dark topMargin70">
 
-    {{#if review}}
     <div class="col-md-6 px-0">
-      <h1 class="display-4 font-italic">{{review.name}}</h1>
-      <p class="lead my-3" id="body-preview">{{review.body}}</p>
-      <p class="lead mb-0"><a href="/reviews/{{review.reviewid}}" class="text-white font-weight-bold">Go to full review</a></p>
+      {{#if review}}
+        <h1 class="display-6 font-italic">Latest review:</h1>    
+        <h1 class="display-4 font-italic">{{review.name}}</h1>
+        <h1 class="display-6 font-italic text-muted">By {{review.author}}</h1>    
+        <p class="lead my-3" id="body-preview">{{review.body}}</p>
+        <p class="lead mb-0"><a href="/reviews/{{review.reviewid}}" class="text-white font-weight-bold">Go to full review</a></p>
+      {{else}}
+        <h1 class="display-4 font-italic">No review has been written yet</h1>
+        <p class="lead my-3" id="body-preview">Wait for me to write something first...</p>
+      {{/if}}
     </div>
-    {{/if}}
+</div>
 
+<hr class="featurette-divider">
+
+<div class="row featurette topMargin70">
+  <div class="col-md-8">
+  <h2 class="featurette-heading"><strong>Mindbreaking analysis</strong></h2>
+  <p class="text-muted homeContent">Nam turpis risus, viverra vitae facilisis a, imperdiet ut sapien. 
+    Fusce porta justo sed malesuada maximus. Proin dignissim ac neque ac malesuada. 
+    Nam nec leo ac lectus dictum ornare. In blandit placerat urna, quis condimentum ex venenatis vel. Nulla facilisi. Fusce ut dignissim mi. 
+    Vestibulum sed sapien nunc. Sed mollis felis ac justo iaculis posuere. Maecenas eu eros id augue dignissim ultrices non a mauris. 
+    Ut pulvinar condimentum lacus eget placerat. Maecenas pretium sem sed molestie porta. Curabitur viverra aliquam porta. 
+    Nullam consequat suscipit lectus sed luctus. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. 
+    Pellentesque elit metus, facilisis sit amet mollis a, porta a enim.</p>
   </div>
+</div>
+
+<hr class="featurette-divider">
+
+<div class="row featurette topMargin70">
+  <div class="col-md-8 order-md-2" id="rightSideHomeContent">
+  <h2 class="featurette-heading floatRightElement"><strong>Objectively correct opinions about your favorite books</strong></h2>
+  <p class="text-muted floatRightElement homeContent">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam mattis, tortor ut ullamcorper facilisis, massa neque convallis mauris, sit amet ornare nibh augue sit amet risus. 
+    Curabitur nisi dui, condimentum sed feugiat in, rutrum eu nisi. Proin nec volutpat urna. Maecenas auctor efficitur augue in mollis. Phasellus accumsan pulvinar placerat. 
+    Vestibulum ac tortor vel risus pellentesque pharetra. Cras quis felis in urna volutpat semper. 
+    Maecenas dolor lorem, venenatis id purus eu, venenatis tempor leo. Nunc posuere elementum quam, in viverra orci feugiat in. Integer fringilla mauris ac tempus semper.</p>
+  </div>
+</div>
+
+<hr class="featurette-divider">
+
+<div class="row topMargin70 bottomMargin30">
+  {{#if collection}}
+    <div class="col-lg-4 biggestCollection" style="border-color: {{{collection.color}}};">
+      <p class="h2 text-muted">My largest review collection:</p>
+      <h2 class="h1" style="color: {{{collection.color}}}">{{collection.name}}</h2>
+      <p class="h4 text-muted">{{collection.noOfReviews}} reviews</p>
+      <p class="collectionDesc">{{collection.description}}</p>
+      <p><a class="btn btn-secondary" href="/collections/{{collection.collectionid}}" role="button">Visit collection</a></p>
+    </div>
+  {{else}}
+    <div class="col-lg-4 biggestCollection">
+      <h2 class="h1">No collection has been created yet</h2>
+      <p class="collectionDesc">Wait for me to create one first...</p>
+    </div>
+  {{/if}}
+</div>

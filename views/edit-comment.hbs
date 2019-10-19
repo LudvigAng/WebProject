@@ -1,0 +1,33 @@
+<h1>Edit comment here</h1>
+
+{{#if validationErrors.length}}
+        <p>Error:</p>
+        <ul>
+            {{#each validationErrors}}
+                <li>{{this}}</li>
+            {{/each}}
+        </ul>
+{{/if}}
+
+{{#if comment}}
+
+<form action="/comments/{{comment.reviewid}}/{{comment.commentid}}/edit" method="POST" autocomplete="off">
+
+    <div class="form-group">
+        <label for="name">Name</label>
+        <input type="text" name="name" maxlength="{{{maxNameLength}}}" class="form-control" value="{{{comment.name}}}" aria-label="name" aria-describedby="button-addon2">
+    </div>
+
+    <div class="form-group topMargin20">
+        <label for="body">The message</label>
+        <textarea type="text" name="body" maxlength="{{{maxBodyLength}}}" aria-label="body" class="form-control rounded-0" id="exampleFormControlTextarea1" rows="5">{{comment.body}}</textarea>
+    </div>
+
+    <input type="hidden" name="_csrf" value="{{{csrfToken}}}">
+
+    <input class="btn btn-outline-dark" type="submit" value="Finish editing comment">
+</form>
+
+<a href="/reviews/{{comment.reviewid}}"><button class="btn btn-outline-dark topMargin8" type="button">Cancel</button></a>
+
+{{/if}}

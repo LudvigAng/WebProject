@@ -1,38 +1,51 @@
 {{#if review}}
+
     <div class="container" id="reviewcontainer">
-        <h1 class="mb-0" style="margin: 30px 0px 10px 15px;">{{review.name}}</h1>
-        <h4 class="mb-1 text-muted" style="margin: 5px 0px 50px 15px;">by {{review.author}}</h4>
-        <h5 class="mb-1 text-muted" style="margin: 5px 0px 50px 15px;">Review published: {{review.publishtime}}</h5>
+        <h1 class="mb-0">{{review.name}}</h1>
+        <h4 class="mb-1 text-muted">by {{review.author}}</h4>
+        <h5 class="mb-1 text-muted">Review published: {{review.publishtime}}</h5>
         
-
-        <h4 style="margin: 15px 0px 20px 15px; display: inline-block">Rating: {{review.rating}}</h3>
+        <h4 class="reviewInfo">Rating: {{review.rating}}/5</h4>
         {{#if collection}}
-            <h4 style="margin: 15px 0px 20px 15px; display: inline-block; border: 3px solid {{{collection.color}}}; padding:5px; margin-left: 50px; color: {{{collection.color}}}; border-radius: 10px;">Collection: {{collection.name}}</h4>
+            <h4 class="reviewInfo reviewCollectionBorder" style="border-color: {{{collection.color}}}; color: {{{collection.color}}};">Collection: {{collection.name}}</h4>
         {{/if}}
 
-        {{#if isLoggedIn}}
-        <a id="reviewbutton" href="/reviews/{{review.reviewid}}/delete"><button type="button" class="btn btn-dark">Delete review</button></a>
-        <a id="reviewbutton" href="/reviews/{{review.reviewid}}/edit"><button type="button" class="btn btn-dark">Edit review</button></a>
-        {{else}}
-        {{/if}}
+        <div id="topstylebar"></div>
 
-        <div id="topstylebar" style="margin-bottom: 30px; background-color: #6c757d;"></div>
-
-        <p style="margin: 0px 0px 20px 0px; word-wrap:break-word">{{review.body}}</p>
+        <p class="containContent">{{review.body}}</p>
 
     </div>
 
-    <div class="container">
+    {{#if isLoggedIn}}
+            <form action="/reviews/{{review.reviewid}}/delete" method="POST">
+                <input type="hidden" name="_csrf" value="{{{csrfToken}}}">
+                <button id="reviewbutton" type="submit" class="btn btn-dark">Delete review</button>
+            </form>
+            
+            <a href="/reviews/{{review.reviewid}}/edit"><button id="reviewbutton" type="button" class="btn btn-dark">Edit review</button></a>
+    {{else}}
+    {{/if}}
+
+    {{#if validationErrors.length}}
+        <p>Error:</p>
+        <ul>
+            {{#each validationErrors}}
+                <li>{{this}}</li>
+            {{/each}}
+        </ul>
+    {{/if}}
+
+    <div class="container bottomMargin30">
         <h4>Write a comment</h4>
-        <form action="" method="POST" autocomplete="off">
+        <form action="/comments/{{review.reviewid}}/write" method="POST" autocomplete="off">
             <div class="form-group">
                 <label for="name">Your name</label>
-                <input type="text" name="name" class="form-control" aria-label="name" aria-describedby="button-addon2">
+                <input type="text" name="name" maxlength="{{{maxNameLength}}}" class="form-control" aria-label="name" aria-describedby="button-addon2">
             </div>
 
             <div class="form-group">
                 <label for="body">Your message</label>
-                <textarea type="text" name="body" aria-label="body" class="form-control rounded-0" id="exampleFormControlTextarea1" rows="3"></textarea>
+                <textarea type="text" name="body" maxlength="{{{maxBodyLength}}}" aria-label="body" class="form-control rounded-0" id="exampleFormControlTextarea1" rows="3"></textarea>
             </div>
 
             <input type="hidden" name="_csrf" value="{{{csrfToken}}}">
@@ -41,27 +54,29 @@
         </form>
     </div>
     
-    <div class="container">
+    <div class="container bottomMargin30">
     {{#if comments.length}}
         {{#each comments}}
-            <div style="margin-top: 20px; padding: 15px; border: 1px solid #6c757d; border-radius: 15px; background-color: #e6e6e6;">
+            <div class="comment containContent">
                 <h4 class="mb-0">{{name}}</h4>
                 <h6 class="mb-1 text-muted">at {{publishtime}}</h6>
-                <p style="word-wrap:break-word;">{{body}}</p>
+                <p class="containContent">{{body}}</p>
+                
 
-                <form action="/reviews/{{review.reviewid}}/delete-comment" method="POST">
-                    <input type="hidden" name="commentid" value="{{{commentid}}}">
-                    <input type="hidden" name="_csrf" value="{{{csrfToken}}}">
-                    <button type="submit" class="btn btn-dark">Delete comment</button>
+                <a href="/comments/{{this.reviewid}}/{{this.commentid}}/edit"><button type="button" class="btn btn-dark blockElement">Edit comment</button></a>
+                
+                <form action="/comments/{{this.reviewid}}/{{this.commentid}}/delete" method="POST">
+                    <input type="hidden" name="_csrf" value="{{{@root.csrfToken}}}">
+                    <button type="submit" class="btn btn-dark topMargin8">Delete comment</button>
                 </form>
-
             </div>
         {{/each}}
     {{/if}}
+
     </div>
 
 {{else}}
     
-    <p style="margin-top: 20px;">No review with this id found.</p>
+    <p class="topMargin20">No review with this id found.</p>
 
 {{/if}}

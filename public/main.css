@@ -14,11 +14,125 @@ body {
     font-family: "Playfair Display", Georgia, "Times New Roman", serif;
 }
 
-.comments {
-    width: 600px;
-    height: 100px;
-    margin: 0 auto;
-    font-size: 50px;
+#mainMargin {
+    margin-top: 50px;
+}
+
+.bottomMargin30 {
+    margin-bottom: 30px;
+}
+
+.topMargin20 {
+    margin-top: 20px;
+}
+
+.topMargin8 {
+    margin-top: 8px;
+}
+
+.topMargin70 {
+    margin-top: 70px;
+}
+
+.floatRightElement {
+    float: right;
+}
+
+.width100 {
+    width: 100%;
+}
+
+.padding20 {
+    padding: 20px;
+}
+
+#loginHeader {
+    text-align: center;
+    margin: 0 auto 25px;
+}
+
+#breakCollectionMemberPreview {
+    word-wrap: break-word; 
+    width: 65em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.reviewInfo {
+    margin: 15px 0px 20px 15px; 
+    display: inline-block;
+}
+
+.reviewCollectionBorder {
+    border: 3px solid;
+    padding:5px; 
+    margin-left: 50px;
+    border-radius: 10px;
+}
+
+.containContent {
+    word-wrap: break-word;
+}
+
+.homeContent {
+    font-size: 1.25rem; 
+    font-weight: 300;
+    width: 900px;
+}
+
+#rightSideHomeContent {
+    margin: 0 5px 0 10%; 
+    min-width: 90%;
+}
+
+.biggestCollection {
+    margin: 0 auto; 
+    text-align: center; 
+    border: 5px solid grey; 
+    border-radius: 100px; 
+    padding: 40px; 
+    max-width: 100%; 
+    min-width: 100%;
+}
+
+.collectionDesc {
+    font-size: 150%; 
+    word-wrap: break-word;
+}
+
+#aboutContainer {
+    margin-top: 150px; 
+    margin-bottom: 319px; 
+    text-align: center;
+}
+
+.blockElement {
+    display: block;
+}
+
+#headCollectionContainer {
+    text-align: center; 
+    margin-top: 30px;
+}
+
+#loginContainer {
+    width: 500px; 
+    margin: 150px auto;
+}
+
+.enlargeTitle {
+    font-size: 400%;
+}
+
+hr {
+    margin: 4rem auto;
+}
+
+#headerBorder {
+    border: 2px solid black; 
+    border-radius:20px; 
+    padding: 15px;
 }
 
 .reviewstylebar {
@@ -33,7 +147,15 @@ body {
     width: 100%;
     background-color: #212529;
     border-radius: 5px;
-    margin-bottom: 60px;
+    margin-bottom: 30px;
+}
+
+.comment {
+    margin-top: 20px; 
+    padding: 15px; 
+    border: 1px solid #6c757d; 
+    border-radius: 15px; 
+    background-color: #e6e6e6;
 }
 
 #reviewcontainer {
@@ -45,7 +167,6 @@ body {
 
 #textHeader {
     text-align: left;
-    margin: 50px 20px 20px 0;
 }
 
 #body-preview {

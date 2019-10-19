@@ -15,7 +15,7 @@
     
     <div class="form-group">
         <label for="name">Name of collection</label>
-        <input type="text" name="name" class="form-control" aria-label="name" aria-describedby="button-addon2">
+        <input type="text" name="name" maxlength="{{{maxNameLength}}}" class="form-control" aria-label="name" aria-describedby="button-addon2">
     </div>
 
     <div class="form-group">
@@ -23,9 +23,9 @@
         <input type="color" name="color" class="form-control" value="#66ccff" aria-label="color">
     </div>
 
-    <div class="form-group" style="margin-top: 70px;">
-        <label for="body">Description</label>
-        <textarea type="text" name="description" aria-label="description" class="form-control rounded-0" id="exampleFormControlTextarea1" rows="5"></textarea>
+    <div class="form-group topMargin70">
+        <label for="body">Description (optional)</label>
+        <textarea type="text" name="description" maxlength="{{{maxBodyLength}}}" aria-label="description" class="form-control rounded-0" id="exampleFormControlTextarea1" rows="5"></textarea>
     </div>
 
     <div class="form-check">

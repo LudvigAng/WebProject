@@ -1,38 +1,45 @@
 {{#if collection}}
-    <h1>{{collection.name}}</h1>
-    <h3>{{collection.noOfReviews}} reviews</h3>
+    <div class="container" id="headCollectionContainer">
+        <h1 class="enlargeTitle" style="color: {{{collection.color}}}">{{collection.name}}</h1>
+        <p class="h3">{{collection.noOfReviews}} reviews</p>
+        <p>{{collection.description}}</p>
+    </div>
 
     {{#if isLoggedIn}}
         <form action="/collections/{{collection.collectionid}}/delete" method="POST">
-            <input type="hidden" name="collectionid" value="{{{collection.collectionid}}}">
             <input type="hidden" name="_csrf" value="{{{csrfToken}}}">
-            <button type="submit">Delete collection</button>
+            <button class="btn btn-dark" id="reviewbutton" type="submit">Delete collection</button>
         </form>
 
         <a id="reviewbutton" href="/collections/{{collection.collectionid}}/edit"><button type="button" class="btn btn-dark">Edit collection</button></a>
     {{else}}
     {{/if}}
 
-    <p>{{collection.description}}</p>
-
+    <hr class="featurette-divider">
 
     <div class="container">
     {{#if reviews.length}}
         {{#each reviews}}
-            <div>
-            <h4 class="mb-0">{{name}}</h4>
-            <h6 class="mb-1 text-muted">at {{publishtime}}</h6> 
-            <p style="word-wrap:break-word;">{{body}}</p>
-            <a class="nav-link" href="/reviews/{{reviewid}}">Go to review</a>
+            <div class="row">
+                <div class="row no-gutters border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative width100">
+                    <div class="col p-4 d-flex flex-column position-static">
+                        <h4 class="mb-0">{{name}}</h4>
+                        <div class="mb-1 text-muted">by {{author}}</div>
+                        <h6 class="mb-1 text-muted">at {{publishtime}}</h6> 
+                        <p id="breakCollectionMemberPreview">{{body}}</p>
+                        <a class="nav-link" href="/reviews/{{reviewid}}">Go to review</a>
+                    </div>
+                </div>
             </div>
         {{/each}}
     {{else}}
         <p>There are no reviews within this collection</p>
     {{/if}}
+        <div id="topstylebar" class="bottomMargin30"></div>
     </div>
 
 {{else}}
     
-    <p style="margin-top: 20px;">No collection with this id found.</p>
+    <p class="topMargin20">No collection with this id found.</p>
 
 {{/if}}

@@ -38,123 +38,218 @@ db.run(`
 `)
 
 exports.writeReview = function(name, author, rating, publishtime, body, collectionid, callback) {
+    
+    const query = "INSERT INTO reviews (name, author, rating, publishtime, body, collectionid) VALUES (?, ?, ?, ?, ?, ?)"
+    const values = [name, author, rating, publishtime, body, collectionid]
 
-    db.run("INSERT INTO reviews (name, author, rating, publishtime, body, collectionid) VALUES (?, ?, ?, ?, ?, ?)", [name, author, rating, publishtime, body, collectionid], function(error) {
+    db.run(query, values, function(error) {
         callback(error, this.lastID)
     })
 }
 
 exports.writeComment = function(name, body, publishtime, reviewid, callback) {
 
-    db.run("INSERT INTO comments (name, body, publishtime, reviewid) VALUES (?, ?, ?, ?)", [name, body, publishtime, reviewid], function(error) {
+    const query = "INSERT INTO comments (name, body, publishtime, reviewid) VALUES (?, ?, ?, ?)"
+    const values = [name, body, publishtime, reviewid]
+
+    db.run(query, values, function(error) {
         callback(error, this.lastID)
     })
 }
 
 exports.createCollection = function(name, description, noOfReviews, color, callback) {
-    db.run("INSERT INTO collections (name, description, noOfReviews, color) VALUES (?, ?, ?, ?)", [name, description, noOfReviews, color], function(error) {
+
+    const query = "INSERT INTO collections (name, description, noOfReviews, color) VALUES (?, ?, ?, ?)"
+    const values = [name, description, noOfReviews, color]
+
+    db.run(query, values, function(error) {
         callback(error, this.lastID)
     })
 }
 
 exports.getComments = function(reviewid, callback) {
 
-    db.all("SELECT * FROM comments WHERE reviewid = ?", [reviewid], function(error, comments) {
+    const query = "SELECT * FROM comments WHERE reviewid = ?"
+    const values = [reviewid]
+
+    db.all(query, values, function(error, comments) {
         callback(error, comments)
     })
 }
 
 exports.getCollectionReviews = function(collectionid, callback) {
+    //finds all reviews belonging to a specific collection
+    const query = "SELECT * FROM reviews WHERE collectionid = ?"
+    const values = [collectionid]
 
-    db.all("SELECT * FROM reviews WHERE collectionid = ?", [collectionid], function(error, reviews) {
+    db.all(query, values, function(error, reviews) {
         callback(error, reviews)
     })
 }
 
 exports.getReviews = function(callback) {
 
-    db.all("SELECT * FROM reviews", function(error, reviews) {
+    const query = "SELECT * FROM reviews"
+
+    db.all(query, function(error, reviews) {
         callback(error, reviews)
     })
 }
 
 exports.getCollections = function(callback) {
-    db.all("SELECT * FROM collections", function(error, collections) {
+
+    const query = "SELECT * FROM collections"
+
+    db.all(query, function(error, collections) {
         callback(error, collections)
     })
 }
 
-exports.getReviewById = function(id, callback) {
+exports.getReviewById = function(reviewid, callback) {
 
-    db.get("SELECT * FROM reviews WHERE reviewid = ?", [id], function(error, review) {
+    const query = "SELECT * FROM reviews WHERE reviewid = ?"
+    const values = [reviewid]
+
+    db.get(query, values, function(error, review) {
         callback(error, review)
+    })
+}
+
+exports.getCommentById = function(commentid, callback) {
+
+    const query = "SELECT * FROM comments WHERE commentid = ?"
+    const values = [commentid]
+
+    db.get(query, values, function(error, comment) {
+        callback(error, comment)
     })
 }
 
 exports.getCollectionById = function(collectionid, callback) {
 
-    db.get("SELECT * FROM collections WHERE collectionid = ?", [collectionid], function(error, collection) {
+    const query = "SELECT * FROM collections WHERE collectionid = ?"
+    const values = [collectionid]
+
+    db.get(query, values, function(error, collection) {
         callback(error, collection)
     })
 }
 
-exports.getReviewbyNameAndAuthor = function(name, author, callback) {
+exports.deleteReview = function(reviewid, callback) {
 
-    db.get("SELECT * FROM reviews WHERE name = ? AND author = ?", [name, author], function(error, review) {
-        callback(error, review)
-    })
-}
+    const query = "DELETE FROM reviews WHERE reviewid = ?"
+    const values = [reviewid]
 
-exports.deleteReview = function(id, callback) {
-    db.get("DELETE FROM reviews WHERE reviewid = ?", [id], function(error) {
+    db.get(query, values, function(error) {
         callback(error)
     })
 }
 
-exports.editReview = function(name, author, rating, body, collectionid, id, callback) {
-    db.get("UPDATE reviews SET name = ?, author = ?, rating = ?, body = ?, collectionid = ? WHERE reviewid = ?", [name, author, rating, body, collectionid, id], function(error) {
+exports.editReview = function(name, author, rating, body, collectionid, reviewid, callback) {
+
+    const query = "UPDATE reviews SET name = ?, author = ?, rating = ?, body = ?, collectionid = ? WHERE reviewid = ?"
+    const values = [name, author, rating, body, collectionid, reviewid]
+
+    db.get(query, values, function(error) {
+        callback(error)
+    })
+}
+
+exports.editComment = function(name, body, commentid, callback) {
+
+    const query = "UPDATE comments SET name = ?, body = ?  WHERE commentid = ?"
+    const values = [name, body, commentid]
+
+    db.get(query, values, function(error) {
         callback(error)
     })
 }
 
 exports.editCollection = function(name, description, color, collectionid, callback) {
-    db.get("UPDATE collections SET name = ?, description = ?, color = ? WHERE collectionid = ?", [name, description, color, collectionid], function(error) {
+
+    const query = "UPDATE collections SET name = ?, description = ?, color = ? WHERE collectionid = ?"
+    const values = [name, description, color, collectionid]
+
+    db.get(query, values, function(error) {
         callback(error)
     })
 }
 
 exports.increaseCollectionSize = function(collectionid, callback) {
-    db.get("UPDATE collections SET noOfReviews = noOfReviews + 1 WHERE collectionid = ?", [collectionid], function(error) {
+    //increases size of collection by 1 when a review gets assigned to a collection
+    const query = "UPDATE collections SET noOfReviews = noOfReviews + 1 WHERE collectionid = ?"
+    const values = [collectionid]
+
+    db.get(query, values, function(error) {
         callback(error)
     })
 }
 
-exports.deleteCollection = function(id, callback) {
-    db.all("DELETE FROM collections WHERE collectionid = ?", [id], function(error) {
+exports.decreaseCollectionSize = function(collectionid, callback) {
+    //decreases size of collection by 1 when a review switches away from its current collection
+    const query = "UPDATE collections SET noOfReviews = noOfReviews - 1 WHERE collectionid = ?"
+    const values = [collectionid]
+
+    db.get(query, values, function(error) {
         callback(error)
     })
 }
 
-exports.resetCollectionPropertyInReview = function(id, callback) {
-    db.all("UPDATE reviews SET collectionid = NULL WHERE collectionid = ?", [id], function(error) {
+exports.deleteCollection = function(collectionid, callback) {
+
+    const query = "DELETE FROM collections WHERE collectionid = ?"
+    const values = [collectionid]
+
+    db.all(query, values, function(error) {
         callback(error)
     })
 }
 
-exports.deleteComments = function(id, callback) {
-    db.all("DELETE FROM comments WHERE reviewid = ?", [id], function(error) {
+exports.resetCollectionPropertyInReview = function(collectionid, callback) {
+    //all reviews belonging to recently deleted collection gets collectionid set to NULL
+    const query = "UPDATE reviews SET collectionid = NULL WHERE collectionid = ?"
+    const values = [collectionid]
+
+    db.all(query, values, function(error) {
         callback(error)
     })
 }
 
-exports.deleteComment = function(id, callback) {
-    db.get("DELETE FROM comments WHERE commentid = ?", [id], function(error) {
+exports.deleteComments = function(reviewid, callback) {
+
+    const query = "DELETE FROM comments WHERE reviewid = ?"
+    const values = [reviewid]
+
+    db.all(query, values, function(error) {
+        callback(error)
+    })
+}
+
+exports.deleteComment = function(commentid, callback) {
+
+    const query = "DELETE FROM comments WHERE commentid = ?"
+    const values = [commentid]
+
+    db.get(query, values, function(error) {
         callback(error)
     })
 }
 
 exports.getNewestReview = function(callback) {
-    db.get("SELECT * FROM reviews ORDER BY reviewid DESC LIMIT 1", function(error, review) {
+    //finds newest review by getting the review with the biggest reviewid value
+    const query = "SELECT * FROM reviews ORDER BY reviewid DESC LIMIT 1"
+
+    db.get(query, function(error, review) {
         callback(error, review)
     })
 }
+
+exports.getLargestCollection = function(callback) {
+    //finds largest collection by sorting by noOfReviews and selecting the one with biggest value
+    const query = "SELECT * FROM collections ORDER BY noOfReviews DESC LIMIT 1"
+
+    db.get(query, function(error, collection) {
+        callback(error, collection)
+    })
+}
+

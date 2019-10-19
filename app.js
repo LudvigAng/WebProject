@@ -5,15 +5,20 @@ const cookieParser = require('cookie-parser')
 const expressSession = require('express-session')
 const csurf = require('csurf')
 const SQLiteStore = require('connect-sqlite3')(expressSession)
+const bcrypt = require('bcrypt')
 const reviewsRouter = require('./reviewsRouters')
+const collectionsRouter = require("./collectionsRouters")
+const commentsRouter = require("./commentsRouters")
 
 
 const db = require('./db')
 
 const app = express()
 
-const username = "LudvigA"
-const password = "secret"
+const username = 'LudvigA'
+
+//password created using the bcrypt hashSync() method
+const password = '$2b$10$koEcdZtckOPxFUy/SqT8oesCMN5/XRFgcGIXVM2042evXgsFCCYX6'
 
 app.use(express.static('public'))
 
@@ -34,14 +39,41 @@ app.use(expressSession ({
 app.use(csurf({cookie: true}))
 
 app.use(function(request, response, next) {
+
+    const lastViewedReviewid = request.cookies.lastViewedReviewid
+
+    db.getReviewById(lastViewedReviewid, function(error, review) {
+        if(error) {
+
+            response.render("dberror.hbs")
+        }
+        else {
+
+            response.locals.lastViewedReview = review
+
+            next()
+        }
+    })
+})
+
+app.use(function(request, response, next) {
     response.locals.isLoggedIn = request.session.isLoggedIn
     response.locals.lastViewedReviewid = request.session.lastViewedReviewid
     response.locals.csrfToken = request.csrfToken()
-    
+
+    //defining all min- and max-lengths of certain inputs for future validation
+    response.locals.minBodyLength = 200
+    response.locals.maxBodyLength = 5000
+    response.locals.maxNameLength = 100
+
     next()
 })
 
 app.use("/reviews", reviewsRouter)
+
+app.use("/collections", collectionsRouter)
+
+app.use("/comments", commentsRouter)
 
 app.engine("hbs", expressHandlebars ({
     defaultLayout: "main.hbs"
@@ -53,13 +85,23 @@ app.get("/", function(request, response){
     db.getNewestReview(function(error, review) {
         if(error) {
 
+            response.render("dberror.hbs")
         }
         else {
-            const model = {
-                review
-            }
+            db.getLargestCollection(function(error, collection) {
+                if(error) {
 
-            response.render("homepage.hbs", model)
+                    response.render("dberror.hbs")
+                }
+                else {
+                    const model = {
+                        review,
+                        collection
+                    }
+
+                    response.render("homepage.hbs", model)
+                }
+            })
         }
     })
 })
@@ -88,159 +130,17 @@ app.get("/login", function(request, response) {
     response.render("login.hbs")
 })
 
-app.get("/collections", function(request, response) {
-
-    db.getCollections(function(error, collections) {
-        if(error) {
-            const model = {
-                errorHappened: true,
-            }
-
-            response.render("collections.hbs", model)
-        }
-        else {
-            const model = {
-                errorHappened: false,
-                collections
-            }
-
-            response.render("collections.hbs", model)
-        }
-    })
-})
-
-app.get("/collections/create", function(request, response) {
-
-    response.render("create-collection.hbs")
-})
-
-app.get("/collections/:id", function(request, response) {
-
-    const id = request.params.id
-
-    db.getCollectionById(id, function(error, collection) {
-
-        if(error) {
-
-        }
-        else {
-
-            db.getCollectionReviews(id, function(error, reviews) {
-                        
-                if(error) {
-        
-                }
-                else {
-                    
-                    const model = {
-                        collection,
-                        reviews
-                    }
-        
-                    response.render("collection.hbs", model)
-                }
-            })           
-        }
-    })
-})
-
-app.post("/collections/:id/delete", function(request, response) {
-    const collectionid = request.body.collectionid
-
-    db.deleteCollection(collectionid, function(error) {
-        if(error) {
-
-        }
-        else {
-            db.resetCollectionPropertyInReview(collectionid, function(error) {
-                if(error) {
-
-                }
-                else {
-                    response.redirect("/collections")
-                }
-            })
-        }
-    })
-})
-
-app.get("/collections/:id/edit", function(request, response) {
-    const id = request.params.id
-
-    db.getCollectionById(id, function(error, collection) {
-        if(error) {
-
-        }
-        else {
-            const model = {
-                collection
-            }
-
-            response.render("edit-collection.hbs", model)
-        }
-    })
-})
-
-app.post("/collections/:id/edit", function(request, response) {
-    const name = request.body.name
-    const description = request.body.description
-    const color = request.body.color
-    const collectionid = request.params.id
-
-    const validationErrors = []
-
-    db.editCollection(name, description, color, collectionid, function(error) {
-        if(error) {
-
-        }
-        else {
-
-            response.redirect("/collections/"+collectionid)
-        }
-    })})
-
-app.post("/collections/create", function(request, response) {
-    const name = request.body.name
-    const description = request.body.description
-    const color = request.body.color
-
-    const validationErrors = []
-
-
-    if(validationErrors.length == 0) {
-
-        db.createCollection(name, description, 0, color, function(error, id) {
-            if(error) {
-    
-            }
-            else {
-                response.redirect("/collections/"+id)
-            }
-        }) 
-    }
-    else {
-
-        const model = {
-            validationErrors
-        }
-
-        response.render("create-collection.hbs", model)
-    }
-})
-
 app.post("/login", function(request, response) {
-    
-    const validationErrors = []
 
     if(request.body.username != username) {
         validationErrors.push("Wrong username")
     }
 
-    if(request.body.password != password) {
+    if(!bcrypt.compareSync(request.body.password, password)) {
         validationErrors.push("Wrong passwword")
     }
 
-    if(request.body.username == username && request.body.password == password) {
+    if(request.body.username == username && bcrypt.compareSync(request.body.password, password)) {
             request.session.isLoggedIn = true
             response.redirect("/")
     }

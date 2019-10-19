@@ -9,16 +9,11 @@ router.get("/", function(request, response){
         
         if(error) {
             
-            const model = {
-                errorHappened: true
-            }
-
-            response.render("reviews.hbs", model)
+            response.render("dberror.hbs")        
         }
         else {
             
             const model = {
-                errorHappened: false,
                 reviews
             }
 
@@ -33,6 +28,7 @@ router.get("/write", function(request, response){
 
         if(error) {
 
+            response.render("dberror.hbs")        
         }
         else {
 
@@ -55,17 +51,23 @@ router.get("/:id", function(request, response) {
 
         if(error) {
 
+            response.render("dberror.hbs")        
         }
+
         else {
+            //finds associated comments and collection
             db.getComments(id, function(error, comments) {
                 if(error) {
 
+                    response.render("dberror.hbs")        
                 }
                 else {
                     db.getCollectionById(review.collectionid, function(error, collection) {
-                        if (error) {
+                        if(error) {
 
+                            response.render("dberror.hbs")        
                         }
+
                         else {
 
                             const model = {
@@ -90,11 +92,13 @@ router.get("/:id/edit", function(request, response) {
     db.getReviewById(id, function(error, review) {
         if(error) {
 
+            response.render("dberror.hbs")        
         }
         else {
             db.getCollections(function(error, collections) {
                 if(error) {
 
+                    response.render("dberror.hbs")        
                 }
                 else {
                     const model = {
@@ -109,53 +113,151 @@ router.get("/:id/edit", function(request, response) {
     })
 })
 
-router.post("/:id/edit", function(request, response) {
+router.post("/:reviewid/edit", function(request, response) {
     const name = request.body.name
     const author = request.body.author
     const rating = request.body.rating
     const body = request.body.body
-    const collectionid = request.body.collectionid
-    const id = request.params.id
+    const newCollectionid = request.body.collectionid
+    const id = request.params.reviewid
 
     const validationErrors = []
 
-    db.editReview(name, author, rating, body, collectionid, id, function(error) {
-        if(error) {
+    //validating input
+    if(name == "") {
+        validationErrors.push("Must enter name of book")
+    }
+    else if(name.length > response.locals.maxNameLength) {
+        validationErrors.push("Max length of name overridden (100 symbols)")
+    }
 
-        }
-        else {
+    if(author == "") {
+        validationErrors.push("Must enter name of author")
+    }
+    else if(author.length > response.locals.maxNameLength) {
+        validationErrors.push("Max length of author name overridden (100 symbols)")
+    }
 
-            response.redirect("/reviews/"+id)
-        }
-    })
+    if(body == "") {
+        validationErrors.push("Must write something about your thoughts of the book")
+    }
+    else if(body.length < response.locals.minBodyLength) {
+        validationErrors.push("Min length of text not met (300 symbols)")
+    }
+    else if(body.length > response.locals.maxBodyLength) {
+        validationErrors.push("Max length of text overridden (5000 symbols)")
+    }
+
+    if(rating == undefined){
+        validationErrors.push("Must give the book a rating")
+    }
+
+    if(validationErrors.length == 0) {
+        db.getReviewById(id, function(error, review) {
+            if(error) {
+
+                response.render("dberror.hbs")        
+            }
+            else {
+                //check to see if the review's collection is the same, undefined or changed to other collection
+                if(newCollectionid == undefined) {
+                    
+                    db.decreaseCollectionSize(review.collectionid, function(error) {
+                        if(error) {
+                
+                            response.render("dberror.hbs")        
+                        }
+                    })
+                }
+                else if(newCollectionid == review.collectionid) {
+                    return
+                }
+                else {
+                    db.increaseCollectionSize(newCollectionid, function(error) {
+                        if(error) {
+
+                            response.render("dberror.hbs")        
+                        }
+                        else {
+                            db.decreaseCollectionSize(review.collectionid, function(error) {
+                                if(error) {
+
+                                    response.render("dberror.hbs")        
+                                }
+                            })
+                        }
+                    })
+                }
+            }
+        })
+
+        db.editReview(name, author, rating, body, newCollectionid, id, function(error) {
+            if(error) {
+
+                response.render("dberror.hbs")        
+            }
+            else {
+
+                response.redirect("/reviews/"+id)
+            }
+        })
+    }
+    else {
+        db.getReviewById(id, function(error, review) {
+            if(error) {
+    
+                response.render("dberror.hbs")        
+            }
+            else {
+                db.getCollections(function(error, collections) {
+                    if(error) {
+    
+                        response.render("dberror.hbs")        
+                    }
+                    else {
+                        const model = {
+                            review,
+                            collections,
+                            validationErrors
+                        }
+            
+                        response.render("edit-review.hbs", model)
+                    }
+                })
+            }
+        })
+    }
 })
 
-router.post("/:id/delete-comment", function(request, response) {
-    const commentid = request.body.commentid
-    const id = request.params.id
+router.post("/:reviewid/delete", function(request, response) {
+    const id = request.params.reviewid
 
-    console.log(commentid)
-    db.deleteComment(commentid, function(error) {
+    db.getReviewById(id, function(error, review) {
         if(error) {
 
+            response.render("dberror.hbs")        
         }
         else {
-            response.redirect("/reviews/"+id)
+            //a collection will lose one member because of the deleted review
+            db.decreaseCollectionSize(review.collectionid, function(error) {
+                if(error) {
+
+                    response.render("dberror.hbs")        
+                }
+            })
         }
     })
-})
-
-router.get("/:id/delete", function(request, response) {
-    const id = request.params.id
 
     db.deleteReview(id, function(error) {
         if(error) {
 
+            response.render("dberror.hbs")        
         }
         else {
             db.deleteComments(id, function(error) {
                 if(error) {
 
+                    response.render("dberror.hbs")        
                 }
                 else {
                     response.redirect("/reviews")
@@ -174,37 +276,46 @@ router.post("/write", function(request, response){
     const currentdate = new Date()
     var currentminute = currentdate.getMinutes()
 
+    const validationErrors = []
+
+    //if the amount of minutes when POST request is handled is between 0 - 10 minutes, the 0 supposed to be in front of the other
+    //digit is normally not visible. 15:07 becomes 15:7 for example. Code checks if that is the case. If so, a 0 will be added
+    //to display minutes correctly.
     if (currentminute < 10) {
         currentminute = "0" + currentdate.getMinutes()
     }
 
+    //combining results of Date functions to construct time string to be stored in DB
     const publishtime = currentdate.getHours() + ":" + currentminute + ", " + currentdate.getDate() + "/" + (currentdate.getMonth()+1) + "/" + currentdate.getFullYear()
 
-    const validationErrors = []
+    //validating input
 
-    const review = db.getReviewbyNameAndAuthor(name, author, function(error, review) {
-        if(error) {
-
-        }
-        else if(review) {
-            return true
-        }
-    })
-
-    if (review) {
-        validationErrors.push("A review for this is already written")
-    }
-
-    if(name == ""){
+    if(name == "") {
         validationErrors.push("Must enter name of book")
+    }
+    else if(name.length > response.locals.maxNameLength) {
+        validationErrors.push("Max length of name overridden (100 symbols)")
     }
 
     if(author == "") {
         validationErrors.push("Must enter name of author")
     }
+    else if(author.length > response.locals.maxNameLength) {
+        validationErrors.push("Max length of author name overridden (100 symbols)")
+    }
 
-    if(rating < 1 || rating > 5){
-        validationErrors.push("Must enter a rating from 1 to 5")
+    if(body == "") {
+        validationErrors.push("Must write something about your thoughts of the book")
+    }
+    else if(body.length < response.locals.minBodyLength) {
+        validationErrors.push("Min length of text not met (300 symbols)")
+    }
+    else if(body.length > response.locals.maxBodyLength) {
+        validationErrors.push("Max length of text overridden (5000 symbols)")
+    }
+
+    if(rating == undefined){
+        validationErrors.push("Must give the book a rating")
     }
 
     if(!response.locals.isLoggedIn) {
@@ -216,12 +327,14 @@ router.post("/write", function(request, response){
         db.writeReview(name, author, rating, publishtime, body, collectionid, function(error, id) {
             if(error) {
 
+                response.render("dberror.hbs")        
             }
             else {
 
                 db.increaseCollectionSize(collectionid, function(error) {
                     if(error) {
 
+                        response.render("dberror.hbs")        
                     }
                     else {
 
@@ -236,11 +349,12 @@ router.post("/write", function(request, response){
         db.getCollections(function(error, collections) {
             if(error) {
 
+                response.render("dberror.hbs")        
             }
             else {
                 const model = {
                     validationErrors,
-                    collections
+                    collections,
                 }
         
                 response.render("write-review.hbs", model)
@@ -248,32 +362,6 @@ router.post("/write", function(request, response){
         })
     }
 })
-
-router.post("/:id", function(request, response) {
-    const name = request.body.name
-    const body = request.body.body
-    const reviewid = request.params.id
-    const currentdate = new Date()
-    var currentminute = currentdate.getMinutes()
-    
-    if (currentminute < 10) {
-        currentminute = "0" + currentdate.getMinutes()
-    }
-
-    const publishtime = currentdate.getHours() + ":" + currentminute + ", " + currentdate.getDate() + "/" + (currentdate.getMonth()+1) + "/" + currentdate.getFullYear()
-
-    const validationErrors = []
-
-    db.writeComment(name, body, publishtime, reviewid, function(error, id) {
-        if(error) {
-
-        }
-        else {
-            response.redirect("/reviews/"+reviewid)
-        }
-    })
-})
-
 
 
 module.exports = router

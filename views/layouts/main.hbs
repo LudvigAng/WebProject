@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang = "en">
+<html lang="en">
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,7 +8,6 @@
     <link rel="stylesheet" href="/main.css">
 	<title>Review site</title>
 </head>
-
 
 <body>
 
@@ -31,6 +30,11 @@
                 <li class="nav-item">
                     <a class="nav-link" href="/about">About</a>
                 </li>
+                {{#if lastViewedReview}}
+                    <li class="nav-item">
+                        <a class="nav-link" href="/reviews/{{lastViewedReview.reviewid}}">Last viewed review</a>
+                    </li>
+                {{/if}}
                 {{#if isLoggedIn}}
                     <li class="nav-item">
                         <a class="nav-link" href="/logout">Logout</a>
@@ -44,18 +48,11 @@
         </div>
     </nav>
 
-
-<main>
-    <div class="container">
+<main id="mainMargin">
+    <div class="container bottomMargin20">
         {{{body}}}
     </div>
 </main>
-
-<footer class="footer mt-auto py-3 bg-dark">
-  <div class="container">
-    <span class="text-muted">Place sticky footer content here.</span>
-  </div>
-</footer>
 
 </body>
 

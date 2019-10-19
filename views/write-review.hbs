@@ -14,12 +14,12 @@
     
     <div class="form-group">
         <label for="name">Name of book</label>
-        <input type="text" name="name" class="form-control" aria-label="name" aria-describedby="button-addon2">
+        <input type="text" name="name" maxlength="{{{maxNameLength}}}" class="form-control" aria-label="name" aria-describedby="button-addon2">
     </div>
 
     <div class="form-group">
         <label for="author">Author</label>
-        <input type="text" name="author" class="form-control" aria-label="author" aria-describedby="button-addon2">
+        <input type="text" name="author" maxlength="{{{maxNameLength}}}" class="form-control" aria-label="author" aria-describedby="button-addon2">
     </div>
 
     <div class="form-group">
@@ -38,7 +38,7 @@
     </div>
 
    <div class="form-group">
-       <label style="display: block" for="rating">Rating</label>
+       <label class="blockElement" for="rating">Rating</label>
         <fieldset class="reviewrating">
             <input type="radio" id="star5" name="rating" value="5" /><label class = "full" for="star5"></label>
             <input type="radio" id="star4" name="rating" value="4" /><label class = "full" for="star4"></label>
@@ -48,9 +48,9 @@
         </fieldset>
     </div>
 
-    <div class="form-group" style="margin-top: 70px;">
+    <div class="form-group topMargin70">
         <label for="body">Your thoughts</label>
-        <textarea type="text" name="body" aria-label="body" class="form-control rounded-0" id="exampleFormControlTextarea1" rows="10"></textarea>
+        <textarea type="text" name="body" minlength="{{{minBodyLength}}}" maxlength="{{{maxBodyLength}}}" aria-label="body" class="form-control rounded-0" id="exampleFormControlTextarea1" rows="10"></textarea>
     </div>
 
     <input type="hidden" name="_csrf" value="{{{csrfToken}}}">

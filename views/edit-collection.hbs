@@ -1,12 +1,21 @@
 <h1>Edit collection here</h1>
 
+{{#if validationErrors.length}}
+        <p>Error:</p>
+        <ul>
+            {{#each validationErrors}}
+                <li>{{this}}</li>
+            {{/each}}
+        </ul>
+{{/if}}
+
 {{#if collection}}
 
 <form action="" method="POST" autocomplete="off">
 
     <div class="form-group">
         <label for="name">Name of collection</label>
-        <input type="text" name="name" class="form-control" value="{{{collection.name}}}" aria-label="name" aria-describedby="button-addon2">
+        <input type="text" name="name" class="form-control" maxlength="{{{maxNameLength}}}" value="{{{collection.name}}}" aria-label="name" aria-describedby="button-addon2">
     </div>
 
     <div class="form-group">
@@ -14,9 +23,9 @@
         <input type="color" name="color" class="form-control" value="{{{collection.color}}}" aria-label="color">
     </div>
 
-    <div class="form-group" style="margin-top: 70px;">
+    <div class="form-group topMargin70">
         <label for="body">Description</label>
-        <textarea type="text" name="description" aria-label="description" class="form-control rounded-0" id="exampleFormControlTextarea1" rows="5">{{collection.description}}</textarea>
+        <textarea type="text" name="description" aria-label="description" maxlength="{{{maxBodyLength}}}" class="form-control rounded-0" id="exampleFormControlTextarea1" rows="5">{{collection.description}}</textarea>
     </div>
 
     <input type="hidden" name="_csrf" value="{{{csrfToken}}}">
@@ -24,6 +33,6 @@
     <input class="btn btn-outline-dark" type="submit" value="Finish editing collection">
 </form>
 
-<a href="/collections/{{collection.collectionid}}"><button class="btn btn-outline-dark" style="margin-top: 8px;" type="button">Cancel</button></a>
+<a href="/collections/{{collection.collectionid}}"><button class="btn btn-outline-dark topMargin8" type="button">Cancel</button></a>
 
 {{/if}}
