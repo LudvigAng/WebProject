@@ -4,8 +4,8 @@ const db = require('./db')
 const router = express.Router()
 
 
-router.get("/:reviewid/:commentid/edit", function(request, response) {
-    const id = request.params.commentid
+router.get("/:reviewId/:commentId/edit", function(request, response) {
+    const id = request.params.commentId
 
     if(!response.locals.isLoggedIn) {
 
@@ -29,11 +29,11 @@ router.get("/:reviewid/:commentid/edit", function(request, response) {
     }
 })
 
-router.post("/:reviewid/:commentid/edit", function(request, response) {
+router.post("/:reviewId/:commentId/edit", function(request, response) {
     const name = request.body.name
     const body = request.body.body
-    const commentid = request.params.commentid
-    const reviewid = request.params.reviewid
+    const commentId = request.params.commentId
+    const reviewId = request.params.reviewId
 
     const validationErrors = []
 
@@ -48,25 +48,25 @@ router.post("/:reviewid/:commentid/edit", function(request, response) {
     if(body == "") {
         validationErrors.push("Must enter a message")
     }
-    else if(body.length > response.locals.maxBodyLength) {
+    else if(body.length > response.locals.maxThoughtsLength) {
         validationErrors.push("Max length of text overridden (5000 symbols)")
     }
 
     if(validationErrors.length == 0) {
 
-        db.editComment(name, body, commentid, function(error) {
+        db.editComment(name, body, commentId, function(error) {
             if(error) {
 
                 response.render("dberror.hbs")        
             }
             else {
 
-                response.redirect("/reviews/"+reviewid)
+                response.redirect("/reviews/"+reviewId)
             }
         })
     }
     else {
-        db.getCommentById(commentid, function(error, comment) {
+        db.getCommentById(commentId, function(error, comment) {
             if(error) {
                 
                 response.render("dberror.hbs")
@@ -84,18 +84,18 @@ router.post("/:reviewid/:commentid/edit", function(request, response) {
     }
 })
 
-router.post("/:reviewid/write", function(request, response) {
+router.post("/:reviewId/write", function(request, response) {
     const name = request.body.name
     const body = request.body.body
-    const reviewid = request.params.reviewid
-    const currentdate = new Date()
-    var currentminute = currentdate.getMinutes()
+    const reviewId = request.params.reviewId
+    const currentDate = new Date()
+    var currentMinute = currentDate.getMinutes()
     
-    if (currentminute < 10) {
-        currentminute = "0" + currentdate.getMinutes()
+    if (currentMinute < 10) {
+        currentMinute = "0" + currentDate.getMinutes()
     }
 
-    const publishtime = currentdate.getHours() + ":" + currentminute + ", " + currentdate.getDate() + "/" + (currentdate.getMonth()+1) + "/" + currentdate.getFullYear()
+    const publishTime = currentDate.getHours() + ":" + currentMinute + ", " + currentDate.getDate() + "/" + (currentDate.getMonth()+1) + "/" + currentDate.getFullYear()
 
     const validationErrors = []
 
@@ -111,40 +111,40 @@ router.post("/:reviewid/write", function(request, response) {
     if(body == "") {
         validationErrors.push("Must enter a message")
     }
-    else if(body.length > response.locals.maxBodyLength) {
+    else if(body.length > response.locals.maxThoughtsLength) {
         validationErrors.push("Max length of text overridden (5000 symbols)")
     }
 
     if(validationErrors.length == 0) {
         
-        db.getReviewById(reviewid, function(error, review) {
+        db.getReviewById(reviewId, function(error, review) {
             if(error) {
 
                 response.render("dberror.hbs")        
             }
             else {
 
-                db.writeComment(name, body, publishtime, reviewid, function(error, id) {
+                db.writeComment(name, body, publishTime, reviewId, function(error, id) {
                     if(error) {
             
                         response.render("dberror.hbs")        
                     }
                     else {
-                        response.redirect("/reviews/"+reviewid)
+                        response.redirect("/reviews/"+reviewId)
                     }
                 })
             }
         })
     }
     else {
-        db.getReviewById(reviewid, function(error, review) {
+        db.getReviewById(reviewId, function(error, review) {
             if(error) {
 
                 response.render("dberror.hbs")        
             }
             else {
 
-                db.getComments(reviewid, function(error, comments) {
+                db.getComments(reviewId, function(error, comments) {
                     if(error) {
         
                         response.render("dberror.hbs")        
@@ -176,9 +176,9 @@ router.post("/:reviewid/write", function(request, response) {
     }
 })
 
-router.post("/:reviewid/:commentid/delete", function(request, response) {
-    const commentid = request.params.commentid
-    const reviewid = request.params.reviewid
+router.post("/:reviewId/:commentId/delete", function(request, response) {
+    const commentId = request.params.commentId
+    const reviewId = request.params.reviewId
 
 
     if(!response.locals.isLoggedIn) {
@@ -186,13 +186,13 @@ router.post("/:reviewid/:commentid/delete", function(request, response) {
         response.redirect("/login")
     }
     else {
-        db.deleteComment(commentid, function(error) {
+        db.deleteComment(commentId, function(error) {
             if(error) {
 
                 response.render("dberror.hbs")        
             }
             else {
-                response.redirect("/reviews/"+reviewid)
+                response.redirect("/reviews/"+reviewId)
             }
         })
     }

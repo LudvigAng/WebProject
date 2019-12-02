@@ -10,7 +10,7 @@
             <h4 class="reviewInfo reviewCollectionBorder" style="border-color: {{{collection.color}}}; color: {{{collection.color}}};">Collection: {{collection.name}}</h4>
         {{/if}}
 
-        <div id="topstylebar"></div>
+        <div id="separationBar"></div>
 
         <p class="containContent">{{review.body}}</p>
 
@@ -19,10 +19,10 @@
     {{#if isLoggedIn}}
             <form action="/reviews/{{review.reviewid}}/delete" method="POST">
                 <input type="hidden" name="_csrf" value="{{{csrfToken}}}">
-                <button id="reviewbutton" type="submit" class="btn btn-dark">Delete review</button>
+                <button id="editDeletebutton" type="submit" class="btn btn-dark">Delete review</button>
             </form>
             
-            <a href="/reviews/{{review.reviewid}}/edit"><button id="reviewbutton" type="button" class="btn btn-dark">Edit review</button></a>
+            <a href="/reviews/{{review.reviewid}}/edit"><button id="editDeletebutton" type="button" class="btn btn-dark">Edit review</button></a>
     {{else}}
     {{/if}}
 
@@ -45,7 +45,7 @@
 
             <div class="form-group">
                 <label for="body">Your message</label>
-                <textarea type="text" name="body" maxlength="{{{maxBodyLength}}}" aria-label="body" class="form-control rounded-0" id="exampleFormControlTextarea1" rows="3"></textarea>
+                <textarea type="text" name="body" maxlength="{{{maxThoughtsLength}}}" aria-label="body" class="form-control rounded-0" id="exampleFormControlTextarea1" rows="3"></textarea>
             </div>
 
             <input type="hidden" name="_csrf" value="{{{csrfToken}}}">

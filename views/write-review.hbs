@@ -1,5 +1,5 @@
 <h1 id="textHeader">Write review</h1>
-<div id="topstylebar"></div>
+<div id="separationBar"></div>
 
 {{#if validationErrors.length}}
     <p>Error:</p>
@@ -24,7 +24,7 @@
 
     <div class="form-group">
         <div class="input-group mb-3">
-            <select class="custom-select" id="inputGroupSelect01" name="collectionid">
+            <select class="custom-select" id="inputGroupSelect01" name="collectionId">
                 <option disabled selected value>Choose a collection for your review... (optional)</option>
                 {{#if collections.length}}
                     {{#each collections}}
@@ -50,7 +50,7 @@
 
     <div class="form-group topMargin70">
         <label for="body">Your thoughts</label>
-        <textarea type="text" name="body" minlength="{{{minBodyLength}}}" maxlength="{{{maxBodyLength}}}" aria-label="body" class="form-control rounded-0" id="exampleFormControlTextarea1" rows="10"></textarea>
+        <textarea type="text" name="body" minlength="{{{minThoughtsLength}}}" maxlength="{{{maxThoughtsLength}}}" aria-label="body" class="form-control rounded-0" id="exampleFormControlTextarea1" rows="10"></textarea>
     </div>
 
     <input type="hidden" name="_csrf" value="{{{csrfToken}}}">

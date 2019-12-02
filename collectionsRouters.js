@@ -103,6 +103,7 @@ router.post("/create", function(request, response) {
     const name = request.body.name
     const description = request.body.description
     const color = request.body.color
+    const startingSize = 0
 
     const validationErrors = []
 
@@ -117,7 +118,7 @@ router.post("/create", function(request, response) {
     if(description == "") {
         validationErrors.push("Must enter description of collection")
     }
-    else if(description.length > response.locals.maxBodyLength) {
+    else if(description.length > response.locals.maxThoughtsLength) {
         validationErrors.push("Max length of description overridden (5000 symbols)")
     }
     //having a very small description for a collection should be a choice, therefor no min-length is checked
@@ -125,7 +126,7 @@ router.post("/create", function(request, response) {
 
     if(validationErrors.length == 0) {
 
-        db.createCollection(name, description, 0, color, function(error, id) {
+        db.createCollection(name, description, startingSize, color, function(error, id) {
             if(error) {
     
                 response.render("dberror.hbs")        
@@ -145,11 +146,11 @@ router.post("/create", function(request, response) {
     }
 })
 
-router.post("/:collectionid/edit", function(request, response) {
+router.post("/:collectionId/edit", function(request, response) {
     const name = request.body.name
     const description = request.body.description
     const color = request.body.color
-    const collectionid = request.params.collectionid
+    const collectionId = request.params.collectionId
 
     const validationErrors = []
 
@@ -164,26 +165,26 @@ router.post("/:collectionid/edit", function(request, response) {
     if(description == "") {
         validationErrors.push("Must enter description of collection")
     }
-    else if(description.length > response.locals.maxBodyLength) {
+    else if(description.length > response.locals.maxThoughtsLength) {
         validationErrors.push("Max length of description overridden (5000 symbols)")
     }
     //having a very small description for a collection should be a choice, therefor no min-length is checked
 
     if(validationErrors.length == 0) {
 
-        db.editCollection(name, description, color, collectionid, function(error) {
+        db.editCollection(name, description, color, collectionId, function(error) {
             if(error) {
     
                 response.render("dberror.hbs")        
             }
             else {
 
-                response.redirect("/collections/"+collectionid)
+                response.redirect("/collections/"+collectionId)
             }
         }) 
     }
     else {
-        db.getCollectionById(collectionid, function(error, collection) {
+        db.getCollectionById(collectionId, function(error, collection) {
             if(error) {
 
                 response.render("dberror.hbs")
@@ -201,17 +202,17 @@ router.post("/:collectionid/edit", function(request, response) {
     }
 })
 
-router.post("/:collectionid/delete", function(request, response) {
-    const collectionid = request.params.collectionid
+router.post("/:collectionId/delete", function(request, response) {
+    const collectionId = request.params.collectionId
 
-    db.deleteCollection(collectionid, function(error) {
+    db.deleteCollection(collectionId, function(error) {
         if(error) {
 
             response.render("dberror.hbs")        
         }
         else {
             //changing collectionid attribute in all reviews which belonged to the deleted collection to NULL 
-            db.resetCollectionPropertyInReview(collectionid, function(error) {
+            db.resetCollectionPropertyInReview(collectionId, function(error) {
                 if(error) {
 
                     response.render("dberror.hbs")        

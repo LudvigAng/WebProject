@@ -45,7 +45,7 @@ router.get("/:id", function(request, response) {
 
     const id = request.params.id
 
-    response.cookie("lastViewedReviewid", id, {httpOnly: true})
+    response.cookie("lastViewedReviewId", id, {httpOnly: true})
 
     db.getReviewById(id, function(error, review) {
 
@@ -113,13 +113,13 @@ router.get("/:id/edit", function(request, response) {
     })
 })
 
-router.post("/:reviewid/edit", function(request, response) {
+router.post("/:reviewId/edit", function(request, response) {
     const name = request.body.name
     const author = request.body.author
     const rating = request.body.rating
     const body = request.body.body
-    const newCollectionid = request.body.collectionid
-    const id = request.params.reviewid
+    const newCollectionId = request.body.collectionId
+    const id = request.params.reviewId
 
     const validationErrors = []
 
@@ -141,10 +141,10 @@ router.post("/:reviewid/edit", function(request, response) {
     if(body == "") {
         validationErrors.push("Must write something about your thoughts of the book")
     }
-    else if(body.length < response.locals.minBodyLength) {
+    else if(body.length < response.locals.minThoughtsLength) {
         validationErrors.push("Min length of text not met (300 symbols)")
     }
-    else if(body.length > response.locals.maxBodyLength) {
+    else if(body.length > response.locals.maxThoughtsLength) {
         validationErrors.push("Max length of text overridden (5000 symbols)")
     }
 
@@ -160,7 +160,7 @@ router.post("/:reviewid/edit", function(request, response) {
             }
             else {
                 //check to see if the review's collection is the same, undefined or changed to other collection
-                if(newCollectionid == undefined) {
+                if(newCollectionId == undefined) {
                     
                     db.decreaseCollectionSize(review.collectionid, function(error) {
                         if(error) {
@@ -169,11 +169,11 @@ router.post("/:reviewid/edit", function(request, response) {
                         }
                     })
                 }
-                else if(newCollectionid == review.collectionid) {
+                else if(newCollectionId == review.collectionid) {
                     return
                 }
                 else {
-                    db.increaseCollectionSize(newCollectionid, function(error) {
+                    db.increaseCollectionSize(newCollectionId, function(error) {
                         if(error) {
 
                             response.render("dberror.hbs")        
@@ -191,7 +191,7 @@ router.post("/:reviewid/edit", function(request, response) {
             }
         })
 
-        db.editReview(name, author, rating, body, newCollectionid, id, function(error) {
+        db.editReview(name, author, rating, body, newCollectionId, id, function(error) {
             if(error) {
 
                 response.render("dberror.hbs")        
@@ -229,8 +229,8 @@ router.post("/:reviewid/edit", function(request, response) {
     }
 })
 
-router.post("/:reviewid/delete", function(request, response) {
-    const id = request.params.reviewid
+router.post("/:reviewId/delete", function(request, response) {
+    const id = request.params.reviewId
 
     db.getReviewById(id, function(error, review) {
         if(error) {
@@ -272,21 +272,21 @@ router.post("/write", function(request, response){
     const author = request.body.author
     const rating = request.body.rating
     const body = request.body.body
-    const collectionid = request.body.collectionid
-    const currentdate = new Date()
-    var currentminute = currentdate.getMinutes()
+    const collectionId = request.body.collectionId
+    const currentDate = new Date()
+    var currentMinute = currentDate.getMinutes()
 
     const validationErrors = []
 
     //if the amount of minutes when POST request is handled is between 0 - 10 minutes, the 0 supposed to be in front of the other
     //digit is normally not visible. 15:07 becomes 15:7 for example. Code checks if that is the case. If so, a 0 will be added
     //to display minutes correctly.
-    if (currentminute < 10) {
-        currentminute = "0" + currentdate.getMinutes()
+    if (currentMinute < 10) {
+        currentMinute = "0" + currentDate.getMinutes()
     }
 
     //combining results of Date functions to construct time string to be stored in DB
-    const publishtime = currentdate.getHours() + ":" + currentminute + ", " + currentdate.getDate() + "/" + (currentdate.getMonth()+1) + "/" + currentdate.getFullYear()
+    const publishTime = currentDate.getHours() + ":" + currentMinute + ", " + currentDate.getDate() + "/" + (currentDate.getMonth()+1) + "/" + currentDate.getFullYear()
 
     //validating input
 
@@ -307,10 +307,10 @@ router.post("/write", function(request, response){
     if(body == "") {
         validationErrors.push("Must write something about your thoughts of the book")
     }
-    else if(body.length < response.locals.minBodyLength) {
+    else if(body.length < response.locals.minThoughtsLength) {
         validationErrors.push("Min length of text not met (300 symbols)")
     }
-    else if(body.length > response.locals.maxBodyLength) {
+    else if(body.length > response.locals.maxThoughtsLength) {
         validationErrors.push("Max length of text overridden (5000 symbols)")
     }
 
@@ -324,14 +324,14 @@ router.post("/write", function(request, response){
 
     if(validationErrors.length == 0) {
 
-        db.writeReview(name, author, rating, publishtime, body, collectionid, function(error, id) {
+        db.writeReview(name, author, rating, publishTime, body, collectionId, function(error, id) {
             if(error) {
 
                 response.render("dberror.hbs")        
             }
             else {
 
-                db.increaseCollectionSize(collectionid, function(error) {
+                db.increaseCollectionSize(collectionId, function(error) {
                     if(error) {
 
                         response.render("dberror.hbs")        

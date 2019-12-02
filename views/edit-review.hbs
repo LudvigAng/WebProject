@@ -25,7 +25,7 @@
     
     <div class="form-group">
         <div class="input-group mb-3">
-            <select class="custom-select" id="inputGroupSelect01" name="collectionid">
+            <select class="custom-select" id="inputGroupSelect01" name="collectionId">
                 <option disabled selected value>Choose a collection for your review... (optional)</option>
                 {{#if collections.length}}
                     {{#each collections}}
@@ -51,7 +51,7 @@
 
     <div class="form-group topMargin70">
         <label for="name">Your thoughts</label>
-        <textarea type="text" name="body" aria-label="body" maxlength="{{{maxBodyLength}}}" class="form-control rounded-0" id="exampleFormControlTextarea1" rows="10">{{{review.body}}}</textarea>
+        <textarea type="text" name="body" aria-label="body" maxlength="{{{maxThoughtsLength}}}" class="form-control rounded-0" id="exampleFormControlTextarea1" rows="10">{{{review.body}}}</textarea>
     </div>
 
     <input type="hidden" name="_csrf" value="{{{csrfToken}}}">

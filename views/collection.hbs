@@ -1,17 +1,17 @@
 {{#if collection}}
-    <div class="container" id="headCollectionContainer">
+    <div class="container" id="centerTextContainerSmallMargin">
         <h1 class="enlargeTitle" style="color: {{{collection.color}}}">{{collection.name}}</h1>
         <p class="h3">{{collection.noOfReviews}} reviews</p>
-        <p>{{collection.description}}</p>
+        <p class="containContent">{{collection.description}}</p>
     </div>
 
     {{#if isLoggedIn}}
         <form action="/collections/{{collection.collectionid}}/delete" method="POST">
             <input type="hidden" name="_csrf" value="{{{csrfToken}}}">
-            <button class="btn btn-dark" id="reviewbutton" type="submit">Delete collection</button>
+            <button class="btn btn-dark" id="editDeletebutton" type="submit">Delete collection</button>
         </form>
 
-        <a id="reviewbutton" href="/collections/{{collection.collectionid}}/edit"><button type="button" class="btn btn-dark">Edit collection</button></a>
+        <a id="editDeletebutton" href="/collections/{{collection.collectionid}}/edit"><button type="button" class="btn btn-dark">Edit collection</button></a>
     {{else}}
     {{/if}}
 
@@ -35,7 +35,7 @@
     {{else}}
         <p>There are no reviews within this collection</p>
     {{/if}}
-        <div id="topstylebar" class="bottomMargin30"></div>
+        <div id="separationBar" class="bottomMargin30"></div>
     </div>
 
 {{else}}

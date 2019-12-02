@@ -101,7 +101,7 @@ body {
     word-wrap: break-word;
 }
 
-#aboutContainer {
+#centerTextContainerBigMargin {
     margin-top: 150px; 
     margin-bottom: 319px; 
     text-align: center;
@@ -115,7 +115,7 @@ body {
     display: block;
 }
 
-#headCollectionContainer {
+#centerTextContainerSmallMargin {
     text-align: center; 
     margin-top: 30px;
 }
@@ -146,7 +146,7 @@ hr {
     background-color: #212529;
 }
 
-#topstylebar {
+#separationBar {
     height: 2px;
     width: 100%;
     background-color: #212529;
@@ -198,6 +198,11 @@ hr {
     content: "\f005";
 }
 
+#editDeletebutton {
+    float: right;
+    margin: 5px;
+}
+
 .reviewrating > label {
     color: #ddd;
     float: right;
@@ -209,9 +214,4 @@ hr {
 
 .reviewrating > input:checked + label:hover, .reviewrating > input:checked ~ label:hover, .rating > label:hover ~ input:checked ~ label, .rating > input:checked ~ label:hover ~ label {
     color: #FFED85;
-}
-
-#reviewbutton {
-    float: right;
-    margin: 5px;
 }

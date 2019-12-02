@@ -40,9 +40,9 @@ app.use(csurf({cookie: true}))
 
 app.use(function(request, response, next) {
 
-    const lastViewedReviewid = request.cookies.lastViewedReviewid
+    const lastViewedReviewId = request.cookies.lastViewedReviewId
 
-    db.getReviewById(lastViewedReviewid, function(error, review) {
+    db.getReviewById(lastViewedReviewId, function(error, review) {
         if(error) {
 
             response.render("dberror.hbs")
@@ -62,8 +62,8 @@ app.use(function(request, response, next) {
     response.locals.csrfToken = request.csrfToken()
 
     //defining all min- and max-lengths of certain inputs for future validation
-    response.locals.minBodyLength = 200
-    response.locals.maxBodyLength = 5000
+    response.locals.minThoughtsLength = 200
+    response.locals.maxThoughtsLength = 5000
     response.locals.maxNameLength = 100
 
     next()
@@ -132,12 +132,14 @@ app.get("/login", function(request, response) {
 
 app.post("/login", function(request, response) {
 
+    const validationErrors = []
+
     if(request.body.username != username) {
         validationErrors.push("Wrong username")
     }
 
     if(!bcrypt.compareSync(request.body.password, password)) {
-        validationErrors.push("Wrong passwword")
+        validationErrors.push("Wrong password")
     }
 
     if(request.body.username == username && bcrypt.compareSync(request.body.password, password)) {
