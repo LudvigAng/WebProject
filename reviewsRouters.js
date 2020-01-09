@@ -24,21 +24,28 @@ router.get("/", function(request, response){
 
 router.get("/write", function(request, response){
 
-    db.getCollections(function(error, collections) {
+    if(!response.locals.isLoggedIn) {
 
-        if(error) {
+        response.redirect("/login")
+    }
+    else {
 
-            response.render("dberror.hbs")        
-        }
-        else {
+        db.getCollections(function(error, collections) {
 
-            const model = {
-                collections
+            if(error) {
+
+                response.render("dberror.hbs")        
             }
+            else {
 
-            response.render("write-review.hbs", model)
-        }
-    })
+                const model = {
+                    collections
+                }
+
+                response.render("write-review.hbs", model)
+            }
+        })
+    }
 })
 
 router.get("/:id", function(request, response) {
@@ -89,28 +96,35 @@ router.get("/:id", function(request, response) {
 router.get("/:id/edit", function(request, response) {
     const id = request.params.id
 
-    db.getReviewById(id, function(error, review) {
-        if(error) {
+    if(!response.locals.isLoggedIn) {
 
-            response.render("dberror.hbs")        
-        }
-        else {
-            db.getCollections(function(error, collections) {
-                if(error) {
+        response.redirect("/login")
+    }
+    else {
 
-                    response.render("dberror.hbs")        
-                }
-                else {
-                    const model = {
-                        review,
-                        collections
+        db.getReviewById(id, function(error, review) {
+            if(error) {
+
+                response.render("dberror.hbs")        
+            }
+            else {
+                db.getCollections(function(error, collections) {
+                    if(error) {
+
+                        response.render("dberror.hbs")        
                     }
-        
-                    response.render("edit-review.hbs", model)
-                }
-            })
-        }
-    })
+                    else {
+                        const model = {
+                            review,
+                            collections
+                        }
+            
+                        response.render("edit-review.hbs", model)
+                    }
+                })
+            }
+        })
+    }
 })
 
 router.post("/:reviewId/edit", function(request, response) {
@@ -150,6 +164,10 @@ router.post("/:reviewId/edit", function(request, response) {
 
     if(rating == undefined){
         validationErrors.push("Must give the book a rating")
+    }
+
+    if(!response.locals.isLoggedIn) {
+        validationErrors.push("You must be logged in to publish!")
     }
 
     if(validationErrors.length == 0) {
@@ -232,39 +250,47 @@ router.post("/:reviewId/edit", function(request, response) {
 router.post("/:reviewId/delete", function(request, response) {
     const id = request.params.reviewId
 
-    db.getReviewById(id, function(error, review) {
-        if(error) {
+    if(!response.locals.isLoggedIn) {
+        
+        response.redirect("/login")
+    }
+    else {
 
-            response.render("dberror.hbs")        
-        }
-        else {
-            //a collection will lose one member because of the deleted review
-            db.decreaseCollectionSize(review.collectionid, function(error) {
-                if(error) {
+        db.getReviewById(id, function(error, review) {
+            if(error) {
 
-                    response.render("dberror.hbs")        
-                }
-            })
-        }
-    })
+                response.render("dberror.hbs")        
+            }
+            else {
+                //a collection will lose one member because of the deleted review
+                db.decreaseCollectionSize(review.collectionid, function(error) {
+                    if(error) {
 
-    db.deleteReview(id, function(error) {
-        if(error) {
-
-            response.render("dberror.hbs")        
-        }
-        else {
-            db.deleteComments(id, function(error) {
-                if(error) {
-
-                    response.render("dberror.hbs")        
-                }
-                else {
-                    response.redirect("/reviews")
-                }
-            })
-        }
-    })
+                        response.render("dberror.hbs")        
+                    }
+                    else {
+                        db.deleteReview(id, function(error) {
+                            if(error) {
+                    
+                                response.render("dberror.hbs")        
+                            }
+                            else {
+                                db.deleteComments(id, function(error) {
+                                    if(error) {
+                    
+                                        response.render("dberror.hbs")        
+                                    }
+                                    else {
+                                        response.redirect("/reviews")
+                                    }
+                                })
+                            }
+                        })
+                    }
+                })
+            }
+        })
+    }
 })
 
 router.post("/write", function(request, response){

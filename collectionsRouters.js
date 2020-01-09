@@ -83,19 +83,26 @@ router.get("/:id", function(request, response) {
 router.get("/:id/edit", function(request, response) {
     const id = request.params.id
 
-    db.getCollectionById(id, function(error, collection) {
-        if(error) {
+    if(!response.locals.isLoggedIn) {
 
-            response.render("dberror.hbs")        
-        }
-        else {
-            const model = {
-                collection
+        response.redirect("/login")
+    }
+    else {
+
+        db.getCollectionById(id, function(error, collection) {
+            if(error) {
+
+                response.render("dberror.hbs")        
             }
+            else {
+                const model = {
+                    collection
+                }
 
-            response.render("edit-collection.hbs", model)
-        }
-    })
+                response.render("edit-collection.hbs", model)
+            }
+        })
+    }
 })
 
 
@@ -123,6 +130,9 @@ router.post("/create", function(request, response) {
     }
     //having a very small description for a collection should be a choice, therefor no min-length is checked
 
+    if(!response.locals.isLoggedIn) {
+        validationErrors.push("You must be logged in to publish!")
+    }
 
     if(validationErrors.length == 0) {
 
@@ -170,6 +180,10 @@ router.post("/:collectionId/edit", function(request, response) {
     }
     //having a very small description for a collection should be a choice, therefor no min-length is checked
 
+    if(!response.locals.isLoggedIn) {
+        validationErrors.push("You must be logged in to publish!")
+    }
+
     if(validationErrors.length == 0) {
 
         db.editCollection(name, description, color, collectionId, function(error) {
@@ -205,24 +219,31 @@ router.post("/:collectionId/edit", function(request, response) {
 router.post("/:collectionId/delete", function(request, response) {
     const collectionId = request.params.collectionId
 
-    db.deleteCollection(collectionId, function(error) {
-        if(error) {
+    if(!response.locals.isLoggedIn) {
+        
+        response.redirect("/login")
+    }
+    else {
 
-            response.render("dberror.hbs")        
-        }
-        else {
-            //changing collectionid attribute in all reviews which belonged to the deleted collection to NULL 
-            db.resetCollectionPropertyInReview(collectionId, function(error) {
-                if(error) {
+        db.deleteCollection(collectionId, function(error) {
+            if(error) {
 
-                    response.render("dberror.hbs")        
-                }
-                else {
-                    response.redirect("/collections")
-                }
-            })
-        }
-    })
+                response.render("dberror.hbs")        
+            }
+            else {
+                //changing collectionid attribute in all reviews which belonged to the deleted collection to NULL 
+                db.resetCollectionPropertyInReview(collectionId, function(error) {
+                    if(error) {
+
+                        response.render("dberror.hbs")        
+                    }
+                    else {
+                        response.redirect("/collections")
+                    }
+                })
+            }
+        })
+    }
 })
 
 

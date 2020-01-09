@@ -8,7 +8,7 @@ router.get("/:reviewId/:commentId/edit", function(request, response) {
     const id = request.params.commentId
 
     if(!response.locals.isLoggedIn) {
-
+        
         response.redirect("/login")
     }
     else {
@@ -50,6 +50,10 @@ router.post("/:reviewId/:commentId/edit", function(request, response) {
     }
     else if(body.length > response.locals.maxThoughtsLength) {
         validationErrors.push("Max length of text overridden (5000 symbols)")
+    }
+
+    if(!response.locals.isLoggedIn) {
+        validationErrors.push("You must be logged in to publish!")
     }
 
     if(validationErrors.length == 0) {

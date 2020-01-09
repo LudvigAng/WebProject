@@ -3,8 +3,8 @@
     <div class="col-md-6 px-0 centerElement">
       {{#if review}}
         <h1 class="display-6 font-italic">Latest review:</h1>    
-        <h1 class="display-4 font-italic">{{review.name}}</h1>
-        <h1 class="display-6 font-italic text-muted">By {{review.author}}</h1>    
+        <h1 class="display-4 font-italic containContent">{{review.name}}</h1>
+        <h1 class="display-6 font-italic text-muted containContent">By {{review.author}}</h1>    
         <p class="lead my-3" id="body-preview">{{review.body}}</p>
         <p class="lead mb-0"><a href="/reviews/{{review.reviewid}}" class="text-white font-weight-bold">Go to full review</a></p>
       {{else}}
